@@ -1,0 +1,14 @@
+.DS_Store
+node_modules/**/*
+.expo/*
+npm-debug.*
+*.jks
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+web-build/
+web-report/
+env.json
+json/*
+!json/shift_data_test.json
