@@ -25,6 +25,10 @@
     ],
     "ios": {
       "supportsTablet": true
+    },
+    "android": {
+      "package": "net.nutfes.nutfes-shift-react-native",
+      "versionCode": 1
     }
   }
 }

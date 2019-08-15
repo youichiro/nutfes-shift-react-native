@@ -58,9 +58,6 @@ class ShiftScreen extends React.Component {
             currentTimeID: null,
             username: null,
             weather: null,
-            memberData: null,
-            memberDetailVisible: false,
-            pressedMember: null,
         };
     }
     componentDidMount() {
@@ -68,7 +65,6 @@ class ShiftScreen extends React.Component {
         this.setCurrentTime();
         this.setShiftData();
         this.setUserName();
-        this.setMemberData();
     }
     async setSheetID () {
         // weatherを取得
@@ -128,18 +124,6 @@ class ShiftScreen extends React.Component {
                 console.log(error);
             });
     }
-    setMemberData() {
-        try {
-            this.setState({
-                memberData: require('../json/members.json')
-            });
-        } catch (error) {
-            Alert.alert(
-                'Error', 'ファイルの読み込みに失敗しました', [{ text: 'OK' }], { cancelable: false },
-            );
-            console.log(error);
-        }
-    }
     setSameTimeMembers(sheet_name, task_name, start_time_id, end_time_id) {
         if (this.state.taskDetailVisible) {
             if (!task_name) {
@@ -152,7 +136,7 @@ class ShiftScreen extends React.Component {
                 return
             }
             const request = axios.create({
-                baseURL: `${SAME_TIME_MEMBERS_API_BASE_URL}/${sheet_name}/${task_name}/${start_time_id}/${end_time_id}`,
+                baseURL: `${env.SAME_TIME_MEMBERS_API_BASE_URL}/${sheet_name}/${task_name}/${start_time_id}/${end_time_id}`,
                 responseType: 'json',
             });
             request.get()
@@ -219,16 +203,7 @@ class ShiftScreen extends React.Component {
             columnViews.push(
                 <Divider key={i} style={{ backgroundColor: data.belong.color, height: 2, marginBottom: 1 }} />,
                 <Text key={i+1} style={[styles.cellBase, styles.belongCell]}>{data.belong.category_name}</Text>,
-                <Text
-                    key={i+2}
-                    style={[styles.cellBase, styles.nameCell]}
-                    onPress={() => this.setState({
-                        memberDetailVisible: true,
-                        pressedMember: data.name,
-                    })}
-                >
-                    {data.name}
-                </Text>
+                <Text key={i+2} style={[styles.cellBase, styles.nameCell]}> {data.name} </Text>
             );
             data.tasks.forEach((task, j) => {
                 let taskCellStyle = [
@@ -397,30 +372,6 @@ class ShiftScreen extends React.Component {
             </Overlay>
         )
     }
-    renderMemberDetailOverlay() {
-        if (this.state.memberDetailVisible === false) {
-            return
-        }
-        const member = this.state.memberData.filter(item => item.name === this.state.pressedMember)[0];
-        if (!member) return;
-        return (
-            <Overlay
-                isVisible={this.state.memberDetailVisible}
-                onBackdropPress={() => this.setState({ memberDetailVisible: false })}
-                width={SCREEN_WIDTH * 0.8}
-                height={SCREEN_HEIGHT * 0.5}
-            >
-                <View style={{ flex: 1, justifyContent: 'center' }}>
-                    <Text style={{ height: 30, textAlign: 'center' }}>{member.name}</Text>
-                    <Text style={{ height: 30, textAlign: 'center' }}>
-                        所属: {member.belong_category} / {member.belong_subcategory}
-                    </Text>
-                    <Text style={{ height: 30, textAlign: 'center' }}>学年: {member.grade}</Text>
-                    <Text style={{ height: 30, textAlign: 'center' }}>電話番号: {member.phone_number}</Text>
-                </View>
-            </Overlay>
-        )
-    }
     render() {
         if (this.state.shiftData === null) {
             return (
@@ -456,7 +407,6 @@ class ShiftScreen extends React.Component {
                 />
                 {this.renderSheetSelectButtons()}
                 {this.renderTaskDetailOverlay()}
-                {this.renderMemberDetailOverlay()}
                 <ScrollView maximumZoomScale={2.0}>
                     <View style={{ flex: 1, flexDirection: 'row', marginBottom: 200 }}>
                         <View style={{ width: 40, alignItems: 'center'}}>
@@ -476,18 +426,10 @@ const NAME_CELL_HEIGHT = 18;
 const TASK_CELL_HEIGHT = 20;
 
 const styles = StyleSheet.create({
-    // ページ全体
-    pageStyle: {
-        flex: 1,
-        justifyContent: 'center',
-        margin: 30
-    },
-    // 時間帯列
     timeColumn: {
         position: 'absolute',
         left: 0,
     },
-    // シフト領域
     cellBase: {
         width: 70,
         textAlign: 'center',
@@ -510,7 +452,6 @@ const styles = StyleSheet.create({
         borderColor: '#F2F2F2',
         borderWidth: 1,
     },
-    // 時間帯
     timeCellBase: {
         width: 40,
         fontSize: 10,

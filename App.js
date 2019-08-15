@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, AsyncStorage } from 'react-native';
+import { View } from 'react-native';
 import { createAppContainer, createSwitchNavigator, createDrawerNavigator } from 'react-navigation'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -12,18 +12,6 @@ import SettingScreen from './screens/SettingScreen';
 
 
 export default class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      username: null,
-    };
-  }
-  async componentDidMount() {
-    let username = await AsyncStorage.getItem('username');
-    if (username) {
-      this.setState({ username: username });
-    }
-  }
   render() {
     const MainDrawer = createDrawerNavigator({
       shift: { screen: ShiftScreen, navigationOptions: { drawerLabel: "全体シフト", drawerIcon: (<Icon name='view-dashboard-variant' size={20}/>) } },
@@ -40,7 +28,7 @@ export default class App extends Component {
     const NavigatorTab = createAppContainer(
       createSwitchNavigator({
         login: LoginScreen,
-        main: MainDrawer
+        main: MainDrawer,
       })
     );
     return (

@@ -2,7 +2,10 @@ import React from 'react';
 import { StyleSheet, Text, View, Alert, ActivityIndicator, ScrollView } from 'react-native';
 import { ListItem, Divider } from 'react-native-elements'
 import { FlatList } from 'react-native-gesture-handler';
+import axios from 'axios';
 import CommonHeader from '../common/CommonHeader';
+
+const env = require('../env.json').PRODUCTION;
 
 
 class MemberListScreen extends React.Component {
@@ -16,19 +19,24 @@ class MemberListScreen extends React.Component {
         this.setMemberData();
     }
     setMemberData() {
-        try {
-            this.setState({
-                memberData: require('../json/members.json')
+        this.setState({ memberData: null });
+        const request = axios.create({
+            baseURL: env.MEMBER_LIST_API_URL,
+            responseType: 'json',
+        });
+        request.get()
+            .then(res => {
+                this.setState({ memberData: res.data });
+            })
+            .catch(error => {
+                Alert.alert(
+                    'Error', 'APIの呼び出しに失敗しました', [{ text: 'OK' }], { cancelable: false },
+                );
+                console.log(error);
             });
-        } catch (error) {
-            Alert.alert(
-                'Error', 'ファイルの読み込みに失敗しました', [{ text: 'OK' }], { cancelable: false },
-            );
-            console.log(error);
-        }
     }
     renderItem = ({ item }) => {
-        let nameStyle = [{ flex: 1, fontSize: 12, textAlign: 'center' }];
+        let nameStyle = [{ flex: 2, fontSize: 12 }];
         if (item.is_leader) {
             nameStyle.push({ textDecorationLine: 'underline' });
         }
@@ -36,10 +44,9 @@ class MemberListScreen extends React.Component {
             <ListItem
                 title={
                     <View style={{ flex: 1, flexDirection: 'row' }}>
-                        <Text style={{ width: 64, fontSize: 12, textAlign: 'left' }}>{item.belong_shortname}</Text>
-                        <Text style={{ width: 22, fontSize: 12, textAlign: 'left' }}>{item.grade}</Text>
+                        <Text style={{ flex: 2, fontSize: 12, paddingLeft: 20 }}>{item.belong_subcategory}</Text>
+                        <Text style={{ flex: 1, fontSize: 12 }}>{item.grade}</Text>
                         <Text style={nameStyle}>{item.name}</Text>
-                        <Text style={{ flex: 1, fontSize: 12, textAlign: 'right' }}>{item.phone_number}</Text>
                     </View>
                 }
                 containerStyle={{ marginTop: -8, marginBottom: -8 }}
