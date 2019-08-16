@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "react-shift-app-v3",
-    "slug": "react-shift-app-v3",
+    "name": "nutfes-shift-react-native",
+    "slug": "nutfes-shift-react-native",
     "privacy": "public",
     "sdkVersion": "33.0.0",
     "platforms": [
@@ -21,13 +21,14 @@
       "fallbackToCacheTimeout": 0
     },
     "assetBundlePatterns": [
-      "**/*"
+      "assets/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "net.nutfes.nutfes-shift-app"
     },
     "android": {
-      "package": "net.nutfes.nutfes-shift-react-native",
+      "package": "net.nutfes.nutfes_shift_app",
       "versionCode": 1
     }
   }

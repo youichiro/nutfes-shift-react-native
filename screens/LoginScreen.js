@@ -86,7 +86,7 @@ class LoginScreen extends React.Component {
                 <Button
                     title="Login"
                     style={{ padding: 30 }}
-                    buttonStyle={{ backgroundColor: 'deepskyblue' }}
+                    buttonStyle={{ backgroundColor: 'mediumseagreen' }}
                     onPress={this.onLoginButtonPress}
                 />
             </View>
