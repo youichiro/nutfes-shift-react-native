@@ -133,7 +133,8 @@ class TimeTableScreen extends React.Component {
                 <Divider key={i+1} />,
             );
             data.events.forEach((event, j) => {
-                let eventCellStyle = [styles.eventCell, { height: 20 * event.n_cell, paddingTop: 18 * (event.n_cell - 1) / 2 + 3 }];
+                let paddingTop = 18 * (event.n_cell - 1) / 2 + 3;
+                let eventCellStyle = [styles.eventCell, { height: 20 * event.n_cell, paddingTop: paddingTop, backgroundColor: event.color }];
                 if (event.name && this.state.currentTimeID >= TIMES[event.start_time] && this.state.currentTimeID < TIMES[event.end_time]) {
                     eventCellStyle.push(styles.currentTimeCell);
                 }
@@ -181,7 +182,7 @@ class TimeTableScreen extends React.Component {
         }
         const title = (
             <Button
-                title={SHEETS[this.state.sheetID]}
+                title={"タイムテーブル: " + SHEETS[this.state.sheetID]}
                 type='clear'
                 onPress={() => this.setState({ sheetButtonVisible: !this.state.sheetButtonVisible })}
                 titleStyle={{ color: 'black', fontSize: 16 }}
