@@ -4,6 +4,7 @@ import { ListItem, Divider } from 'react-native-elements'
 import { FlatList } from 'react-native-gesture-handler';
 import axios from 'axios';
 import CommonHeader from '../common/CommonHeader';
+import CommonActivityIndicator from '../common/CommonActivityIndicator';
 
 const env = require('../env.json').PRODUCTION;
 
@@ -29,9 +30,7 @@ class MemberListScreen extends React.Component {
                 this.setState({ memberData: res.data });
             })
             .catch(error => {
-                Alert.alert(
-                    'Error', 'APIの呼び出しに失敗しました', [{ text: 'OK' }], { cancelable: false },
-                );
+                Alert.alert('Error', 'APIの呼び出しに失敗しました');
                 console.log(error);
             });
     }
@@ -82,11 +81,7 @@ class MemberListScreen extends React.Component {
     }
     render() {
         if (this.state.memberData === null) {
-            return (
-                <View style={{ flex: 1, justifyContent: 'center' }}>
-                    <ActivityIndicator size='large' />
-                </View>
-            );
+            return <CommonActivityIndicator/>;
         }
         return (
             <View>

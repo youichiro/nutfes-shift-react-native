@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { View } from 'react-native';
+import { View, Alert, Text } from 'react-native';
 import { createAppContainer, createSwitchNavigator, createDrawerNavigator } from 'react-navigation'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { Notifications } from 'expo';
 
 import LoginScreen from './screens/LoginScreen';
 import ShiftScreen from './screens/ShiftScreen';
@@ -12,6 +13,17 @@ import SettingScreen from './screens/SettingScreen';
 
 
 export default class App extends Component {
+  componentDidMount() {
+    this._notificationSubscription = Notifications.addListener(this._handleNotification);
+  }
+  _handleNotification = (notification) => {
+    if (notification.origin === 'selected') {
+      //バックグラウンドで通知
+    } else if (notification.origin === 'received') {
+      //フォアグラウンドで通知
+      Alert.alert('通知が来ました:' + notification.data);
+    }
+  }
   render() {
     const MainDrawer = createDrawerNavigator({
       shift: { screen: ShiftScreen, navigationOptions: { drawerLabel: "全体シフト", drawerIcon: (<Icon name='view-dashboard-variant' size={20}/>) } },

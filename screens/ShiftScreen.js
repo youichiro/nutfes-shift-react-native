@@ -1,9 +1,11 @@
 import React from 'react';
-import { StyleSheet, Text, View, ScrollView, ActivityIndicator, Alert, Dimensions, Linking, AsyncStorage } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, ActivityIndicator,
+         Alert, Dimensions, Linking, AsyncStorage, Image } from 'react-native';
 import { Button, ButtonGroup, Overlay, Divider } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/Feather';
 import axios from 'axios';
 import CommonHeader from '../common/CommonHeader';
+import CommonActivityIndicator from '../common/CommonActivityIndicator';
 
 const env = require('../env.json').PRODUCTION;
 const ShiftData = require('../json/shift_data_test.json');
@@ -61,10 +63,10 @@ class ShiftScreen extends React.Component {
         };
     }
     componentDidMount() {
+        this.setUserName();
         this.setSheetID();
         this.setCurrentTime();
         this.setShiftData();
-        this.setUserName();
     }
     async setSheetID () {
         // weatherを取得
@@ -77,9 +79,7 @@ class ShiftScreen extends React.Component {
                 this.setState({ weather: res.data });
             })
             .catch(error => {
-                Alert.alert(
-                    'Error', 'APIの呼び出しに失敗しました', [{ text: 'OK' }], { cancelable: false },
-                );
+                Alert.alert('Error', 'APIの呼び出しに失敗しました');
                 console.log(error);
             })
 
@@ -118,9 +118,7 @@ class ShiftScreen extends React.Component {
                 this.setState({ shiftData: res.data });
             })
             .catch(error => {
-                Alert.alert(
-                    'Error', 'APIの呼び出しに失敗しました', [{ text: 'OK' }], { cancelable: false },
-                );
+                Alert.alert('Error', 'APIの呼び出しに失敗しました');
                 console.log(error);
             });
     }
@@ -149,9 +147,7 @@ class ShiftScreen extends React.Component {
                     });
                 })
                 .catch(error => {
-                    Alert.alert(
-                        'Error', 'APIの呼び出しに失敗しました', [{ text: 'OK' }], { cancelable: false },
-                    );
+                    Alert.alert('Error', 'APIの呼び出しに失敗しました');
                     console.log(error);
                 })
         }
@@ -263,14 +259,14 @@ class ShiftScreen extends React.Component {
             return (
                 <ButtonGroup
                     onPress={(sheetID) => {
-                        if (sheetID === this.state.sheetID) {
+                        if (sheetID+1 === this.state.sheetID) {
                             this.setState({ sheetButtonVisible: false });
                         } else {
-                            this.setState({ sheetID, sheetButtonVisible: false });
+                            this.setState({ sheetID: sheetID+1, sheetButtonVisible: false });
                             this.setShiftData();
                         }
                     }}
-                    selectedIndex={this.state.sheetID}
+                    selectedIndex={this.state.sheetID-1}
                     buttons={buttons}
                     containerStyle={styles.sheetButtonGroup}
                     selectedButtonStyle={{ backgroundColor: 'mediumseagreen' }}
@@ -283,9 +279,7 @@ class ShiftScreen extends React.Component {
             Linking.canOpenURL(url)
                 .then(_ => { Linking.openURL(url) })
                 .catch(error => {
-                    Alert.alert(
-                        'Error', '無効なURLです', [{ text: 'ok' }], { cancelable: false },
-                    );
+                    Alert.alert('Error', '無効なURLです');
                     console.log(error);
                 })
         }
@@ -306,18 +300,30 @@ class ShiftScreen extends React.Component {
             memberView = [<Text key={0} style={{ fontSize: 10 }}>loading...</Text>];
         } else {
             for (let i = 0; i < members.length / 2; i += 2) {
-                memberView.push(
-                    <View key={i} style={{ flex: 1, flexDirection: 'row' }}>
-                        <View style={{ flex: 1, flexDirection: 'row' }}>
-                            <Text style={{ flex: 5, fontSize: 10, color: 'darkslategray' }}>{members[i].belong} {members[i].grade} </Text>
-                            <Text style={{ flex: 6, fontSize: 12 }}>{members[i].name}</Text>
+                if (i != members.length - 1) {
+                    memberView.push(
+                        <View key={i} style={{ flex: 1, flexDirection: 'row' }}>
+                            <View style={{ flex: 1, flexDirection: 'row' }}>
+                                <Text style={{ flex: 5, fontSize: 10, color: 'darkslategray' }}>{members[i].belong} {members[i].grade} </Text>
+                                <Text style={{ flex: 6, fontSize: 12 }}>{members[i].name}</Text>
+                            </View>
+                            <View style={{ flex: 1, flexDirection: 'row' }}>
+                                <Text style={{ flex: 5, fontSize: 10, color: 'darkslategray' }}>{members[i + 1].belong} {members[i + 1].grade} </Text>
+                                <Text style={{ flex: 6, fontSize: 12 }}>{members[i + 1].name}</Text>
+                            </View>
                         </View>
-                        <View style={{ flex: 1, flexDirection: 'row' }}>
-                            <Text style={{ flex: 5, fontSize: 10, color: 'darkslategray' }}>{members[i+1].belong} {members[i+1].grade} </Text>
-                            <Text style={{ flex: 6, fontSize: 12 }}>{members[i+1].name}</Text>
+                    )
+                } else {
+                    memberView.push(
+                        <View key={i} style={{ flex: 1, flexDirection: 'row' }}>
+                            <View style={{ flex: 1, flexDirection: 'row' }}>
+                                <Text style={{ flex: 5, fontSize: 10, color: 'darkslategray' }}>{members[i].belong} {members[i].grade} </Text>
+                                <Text style={{ flex: 6, fontSize: 12 }}>{members[i].name}</Text>
+                            </View>
+                            <View style={{ flex: 1, flexDirection: 'row' }}></View>
                         </View>
-                    </View>
-                )
+                    )
+                }
             }
         }
 
@@ -374,11 +380,7 @@ class ShiftScreen extends React.Component {
     }
     render() {
         if (this.state.shiftData === null) {
-            return (
-                <View style={{ flex: 1, justifyContent: 'center' }}>
-                    <ActivityIndicator size='large' />
-                </View>
-            );
+            return <CommonActivityIndicator/>;
         }
         const title = (
             <Button

@@ -1,7 +1,10 @@
 import React from 'react';
-import { Text, View, AsyncStorage, ActivityIndicator, Alert } from 'react-native';
+import { Text, View, AsyncStorage, Alert } from 'react-native';
 import { Input, Button } from 'react-native-elements'
 import axios from 'axios';
+import { Notifications } from 'expo';
+import * as Permissions from 'expo-permissions';
+import CommonActivityIndicator from '../common/CommonActivityIndicator';
 
 const env = require('../env.json').PRODUCTION;
 
@@ -25,11 +28,37 @@ class LoginScreen extends React.Component {
             this.setState({ isInitialized: false });
         }
     }
+    async registerForPushNotificationsAsync() {
+        try {
+            const { status: existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+            let finalStatus = existingStatus;
+            if (existingStatus !== 'granted') {
+                const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+                finalStatus = status;
+            }
+            if (finalStatus !== 'granted') {
+                return;
+            }
+            let token = await Notifications.getExpoPushTokenAsync();
+            return fetch(env.DEVICE_TOKEN_POST_URL, {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    token: token,
+                    username: this.state.username
+                })
+            })
+        } catch (error) {
+            Alert.alert('Error', error);
+        }
+    }
     async isNutfesEmail(email) {
         if (email) {
             const request = axios.create({
                 baseURL: `${env.NUTFES_EMAIL_API_BASE_URL}/${email}`,
-                // baseURL: `http://localhost:8000/shift/api/check_email/${email}`,
                 responseType: 'json',
             });
             await request.get()
@@ -37,9 +66,7 @@ class LoginScreen extends React.Component {
                     this.setState({ username: res.data });
                 })
                 .catch(error => {
-                    Alert.alert(
-                        'Error', 'APIの呼び出しに失敗しました', [{ text: 'OK' }], { cancelable: false },
-                    );
+                    Alert.alert('Error', 'APIの呼び出しに失敗しました');
                     console.log(error);
                 })
         }
@@ -50,19 +77,15 @@ class LoginScreen extends React.Component {
         if (this.state.username && this.state.password === env.PASSWORD) {
             await AsyncStorage.setItem('isInitialized', 'true');
             await AsyncStorage.setItem('username', this.state.username);
+            this.registerForPushNotificationsAsync();  // 通知設定
             this.props.navigation.navigate('shift');
         } else {
-            Alert.alert(
-                'Alert',
-                'メールアドレスもしくはパスワードが違います',
-                [{ text: 'OK' }],
-                { cancelable: false }
-            );
+            Alert.alert('Error', 'メールアドレスもしくはパスワードが違います');
         }
     }
     render() {
         if (this.state.isInitialized === null) {
-            return <ActivityIndicator size="large" />;
+            return <CommonActivityIndicator/>
         }
         return (
             <View style={{ flex: 1, justifyContent: 'center', margin: 30}}>
@@ -72,7 +95,7 @@ class LoginScreen extends React.Component {
                 <Text></Text>
                 <Input
                     placeholder="Email"
-                    onChangeText={(email) => this.setState({email})}
+                    onChangeText={(email) => this.setState({ email })}
                     autoCapitalize='none'
                 />
                 <Text></Text>

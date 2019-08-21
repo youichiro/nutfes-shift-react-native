@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "nutfes-shift-react-native",
-    "slug": "nutfes-shift-react-native",
+    "name": "nutfes-shift-app",
+    "slug": "nutfes-shift-app",
     "privacy": "public",
     "sdkVersion": "33.0.0",
     "platforms": [
@@ -30,6 +30,7 @@
     "android": {
       "package": "net.nutfes.nutfes_shift_app",
       "versionCode": 1
-    }
+    },
+    "description": ""
   }
 }
