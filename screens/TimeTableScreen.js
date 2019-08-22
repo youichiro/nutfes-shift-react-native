@@ -4,6 +4,7 @@ import { Divider, Button, ButtonGroup } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/Feather';
 import axios from 'axios';
 import CommonHeader from '../common/CommonHeader';
+import CommonActivityIndicator from '../common/CommonActivityIndicator';
 
 
 const env = require('../env.json').PRODUCTION;
@@ -50,7 +51,6 @@ class TimeTableScreen extends React.Component {
         // weatherを取得
         const request = axios.create({
             baseURL: env.WEATHER_API_URL,
-            // baseURL: 'http://localhost:8000/option/api/weather',
             responseType: 'json',
         });
         await request.get()
@@ -58,9 +58,7 @@ class TimeTableScreen extends React.Component {
                 this.setState({ weather: res.data });
             })
             .catch(error => {
-                Alert.alert(
-                    'Error', 'APIの呼び出しに失敗しました', [{ text: 'OK' }], { cancelable: false },
-                );
+                Alert.alert('Error', 'APIの呼び出しに失敗しました');
                 console.log(error);
             })
 
@@ -91,9 +89,7 @@ class TimeTableScreen extends React.Component {
                 this.setState({ timetableData: res.data });
             })
             .catch(error => {
-                Alert.alert(
-                    'Error', 'APIの呼び出しに失敗しました', [{ text: 'OK' }], { cancelable: false },
-                );
+                Alert.alert('Error', 'APIの呼び出しに失敗しました');
                 console.log(error);
             });
     }
@@ -105,7 +101,7 @@ class TimeTableScreen extends React.Component {
             let currentTime = hour + ':' + minutes;
             currentTimeID = currentTime in TIMES ? TIMES[currentTime] : 0;
             this.setState({ currentTimeID: currentTimeID });
-        }, 1000)
+        }, 5000)
     }
     renderTimeViews() {
         let views = [];
@@ -174,15 +170,11 @@ class TimeTableScreen extends React.Component {
     }
     render() {
         if (this.state.timetableData === null) {
-            return (
-                <View style={{ flex: 1, justifyContent: 'center' }}>
-                    <ActivityIndicator size='large' />
-                </View>
-            );
+            return <CommonActivityIndicator/>;
         }
         const title = (
             <Button
-                title={"タイムテーブル: " + SHEETS[this.state.sheetID]}
+                title={SHEETS[this.state.sheetID]}
                 type='clear'
                 onPress={() => this.setState({ sheetButtonVisible: !this.state.sheetButtonVisible })}
                 titleStyle={{ color: 'black', fontSize: 16 }}

@@ -23,9 +23,7 @@ class SettingScreen extends React.Component {
     async onLogoutButtonPress() {
         await AsyncStorage.removeItem('isInitialized');
         await AsyncStorage.removeItem('username');
-        Alert.alert(
-            'ログアウトしました', '', [{ text: 'ok' }], { cancelable: false }
-        );
+        Alert.alert('ログアウトしました');
         this.props.navigation.navigate('login');
     }
     render() {

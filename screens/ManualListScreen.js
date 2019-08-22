@@ -4,6 +4,7 @@ import { ListItem, Divider } from 'react-native-elements'
 import { FlatList } from 'react-native-gesture-handler';
 import axios from 'axios';
 import CommonHeader from '../common/CommonHeader';
+import CommonActivityIndicator from '../common/CommonActivityIndicator';
 
 const env = require('../env.json').PRODUCTION;
 
@@ -37,9 +38,7 @@ class ManualListScreen extends React.Component {
                 this.setState({ manualData: manualData });
             })
             .catch(error => {
-                Alert.alert(
-                    'Error', 'APIの呼び出しに失敗しました', [{ text: 'OK' }], { cancelable: false },
-                );
+                Alert.alert('Error', 'APIの呼び出しに失敗しました');
                 console.log(error);
             });
     }
@@ -50,9 +49,7 @@ class ManualListScreen extends React.Component {
                     Linking.openURL(url);
                 })
                 .catch(error => {
-                    Alert.alert(
-                        'Error', '無効なURLです', [{ text: 'ok' }], { cancelable: false },
-                    );
+                    Alert.alert('Error', '無効なURLです');
                     console.log(error);
                 })
         }
@@ -92,11 +89,7 @@ class ManualListScreen extends React.Component {
     }
     render() {
         if (this.state.manualData === null) {
-            return (
-                <View style={{ flex: 1, justifyContent: 'center' }}>
-                    <ActivityIndicator size='large' />
-                </View>
-            );
+            return <CommonActivityIndicator/>;
         }
         return (
             <View>
