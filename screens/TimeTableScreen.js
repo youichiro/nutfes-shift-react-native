@@ -51,7 +51,6 @@ class TimeTableScreen extends React.Component {
         // weatherを取得
         const request = axios.create({
             baseURL: env.WEATHER_API_URL,
-            // baseURL: 'http://localhost:8000/option/api/weather',
             responseType: 'json',
         });
         await request.get()
@@ -102,7 +101,7 @@ class TimeTableScreen extends React.Component {
             let currentTime = hour + ':' + minutes;
             currentTimeID = currentTime in TIMES ? TIMES[currentTime] : 0;
             this.setState({ currentTimeID: currentTimeID });
-        }, 1000)
+        }, 5000)
     }
     renderTimeViews() {
         let views = [];

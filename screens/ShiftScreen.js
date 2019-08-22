@@ -160,7 +160,7 @@ class ShiftScreen extends React.Component {
             let currentTime = hour + ':' + minutes;
             currentTimeID = currentTime in TIMES ? TIMES[currentTime] : 0;
             this.setState({ currentTimeID: currentTimeID });
-        }, 1000)
+        }, 5000)
     }
     async setUserName() {
         let username = await AsyncStorage.getItem('username');
