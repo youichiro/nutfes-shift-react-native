@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Alert, Text } from 'react-native';
+import { View, Alert, Text, AsyncStorage } from 'react-native';
 import { createAppContainer, createSwitchNavigator, createDrawerNavigator } from 'react-navigation'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Notifications } from 'expo';
@@ -16,12 +16,10 @@ export default class App extends Component {
   componentDidMount() {
     this._notificationSubscription = Notifications.addListener(this._handleNotification);
   }
-  _handleNotification = (notification) => {
-    if (notification.origin === 'selected') {
-      //バックグラウンドで通知
-    } else if (notification.origin === 'received') {
-      //フォアグラウンドで通知
-      Alert.alert('通知が来ました:' + notification.data);
+  _handleNotification = async (notification) => {
+    let doPush = await AsyncStorage.getItem('doPush');
+    if (doPush === 'true' && notification.origin === 'received') {
+      Alert.alert(notification.data.title, notification.data.body);
     }
   }
   render() {

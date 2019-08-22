@@ -77,6 +77,7 @@ class LoginScreen extends React.Component {
         if (this.state.username && this.state.password === env.PASSWORD) {
             await AsyncStorage.setItem('isInitialized', 'true');
             await AsyncStorage.setItem('username', this.state.username);
+            await AsyncStorage.setItem('doPush', 'true');
             this.registerForPushNotificationsAsync();  // 通知設定
             this.props.navigation.navigate('shift');
         } else {
