@@ -9,6 +9,7 @@ import ShiftScreen from './screens/ShiftScreen';
 import TimeTableScreen from './screens/TimeTableScreen';
 import ManualListScreen from './screens/ManualListScreen';
 import MemberListScreen from './screens/MemberListScreen';
+import ContactScreen from './screens/ContactScreen';
 import SettingScreen from './screens/SettingScreen';
 
 
@@ -28,6 +29,7 @@ export default class App extends Component {
       time_table: { screen: TimeTableScreen, navigationOptions: { drawerLabel: "タイムテーブル", drawerIcon: (<Icon name='view-dashboard' size={20}/>) } },
       manual: { screen: ManualListScreen, navigationOptions: { drawerLabel: "技大祭マニュアル", drawerIcon: (<Icon name='view-list' size={20}/>) } },
       member: { screen: MemberListScreen, navigationOptions: { drawerLabel: "名簿", drawerIcon: (<Icon name='account-details' size={20}/>) }},
+      contact: { screen: ContactScreen, navigationOptions: { drawerLabel: "全体連絡", drawerIcon: (<Icon name='content-paste' size={20}/>) }},
       setting: { screen: SettingScreen, navigationOptions: { drawerLabel: "設定", drawerIcon: (<Icon name='settings' size={20}/>) } },
     }, {
       contentOptions: {
