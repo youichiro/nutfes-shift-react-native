@@ -10,6 +10,7 @@ import TimeTableScreen from './screens/TimeTableScreen';
 import ManualListScreen from './screens/ManualListScreen';
 import MemberListScreen from './screens/MemberListScreen';
 import ContactScreen from './screens/ContactScreen';
+import MapScreen from './screens/MapScreen';
 import SettingScreen from './screens/SettingScreen';
 
 
@@ -28,8 +29,9 @@ export default class App extends Component {
       shift: { screen: ShiftScreen, navigationOptions: { drawerLabel: "全体シフト", drawerIcon: (<Icon name='view-dashboard-variant' size={20}/>) } },
       time_table: { screen: TimeTableScreen, navigationOptions: { drawerLabel: "タイムテーブル", drawerIcon: (<Icon name='view-dashboard' size={20}/>) } },
       manual: { screen: ManualListScreen, navigationOptions: { drawerLabel: "技大祭マニュアル", drawerIcon: (<Icon name='view-list' size={20}/>) } },
-      member: { screen: MemberListScreen, navigationOptions: { drawerLabel: "名簿", drawerIcon: (<Icon name='account-details' size={20}/>) }},
-      contact: { screen: ContactScreen, navigationOptions: { drawerLabel: "全体連絡", drawerIcon: (<Icon name='content-paste' size={20}/>) }},
+      member: { screen: MemberListScreen, navigationOptions: { drawerLabel: "名簿", drawerIcon: (<Icon name='account-details' size={20}/>) } },
+      contact: { screen: ContactScreen, navigationOptions: { drawerLabel: "全体連絡", drawerIcon: (<Icon name='content-paste' size={20}/>) } },
+      map: { screen: MapScreen, navigationOptions: { drawerLabel: "会場マップ", drawerIcon: (<Icon name='map' size={20}/>) }},
       setting: { screen: SettingScreen, navigationOptions: { drawerLabel: "設定", drawerIcon: (<Icon name='settings' size={20}/>) } },
     }, {
       contentOptions: {

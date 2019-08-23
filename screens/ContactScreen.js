@@ -51,7 +51,11 @@ class ContactScreen extends React.Component {
         if (node.name == 'img') {
             const a = node.attribs;
             return (
-                <Image style={{ width: SCREEN_WIDTH * 0.5, height: SCREEN_WIDTH * 0.4 }} source={{ uri: `http://localhost:8000${a.src}` }} />
+                <Image
+                    key={index}
+                    style={{ width: SCREEN_WIDTH * 0.5, height: SCREEN_WIDTH * 0.4 }}
+                    source={{ uri: env.DOMAIN + a.src }}
+                />
             );
         }
     }
@@ -117,6 +121,7 @@ const styles = StyleSheet.create({
     date: {
         fontSize: 10,
         textAlign: 'right',
+        marginTop: 20,
         marginBottom: 20,
     }
 })
