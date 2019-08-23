@@ -1,6 +1,6 @@
 import React from 'react';
-import { StyleSheet, Text, View, ScrollView, ActivityIndicator,
-         Alert, Dimensions, Linking, AsyncStorage, Image } from 'react-native';
+import { StyleSheet, Text, View, ScrollView,
+         Alert, Dimensions, Linking, AsyncStorage, TouchableOpacity } from 'react-native';
 import { Button, ButtonGroup, Overlay, Divider } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/Feather';
 import axios from 'axios';
@@ -210,9 +210,8 @@ class ShiftScreen extends React.Component {
                     taskCellStyle.push(styles.currectTimeCell);
                 }
                 columnViews.push(
-                    <Text
+                    <TouchableOpacity
                         key={i+3+j}
-                        style={taskCellStyle}
                         onPress={() => this.setState({
                             taskDetailVisible: true,
                             taskDetails: {
@@ -229,8 +228,8 @@ class ShiftScreen extends React.Component {
                             }
                         })}
                     >
-                        {task.name}
-                    </Text>
+                        <Text style={taskCellStyle}>{task.name}</Text>
+                    </TouchableOpacity>
                 );
             })
             let currentUserStyle = {};
