@@ -158,7 +158,7 @@ class ShiftScreen extends React.Component {
             let hour = ('0' + now.getHours().toString()).slice(-2);
             let minutes = now.getMinutes() < 30 ? '00' : '30';
             let currentTime = hour + ':' + minutes;
-            currentTimeID = currentTime in TIMES ? TIMES[currentTime] : 0;
+            let currentTimeID = currentTime in TIMES ? TIMES[currentTime] : 0;
             this.setState({ currentTimeID: currentTimeID });
         }, 5000)
     }
