@@ -206,7 +206,7 @@ class ShiftScreen extends React.Component {
                     styles.cellBase, styles.taskCell, { height: TASK_CELL_HEIGHT * task.n_cell, backgroundColor: task.color || 'white' }
                 ];
                 // 現在時刻を強調
-                if (this.state.currentTimeID >= task.start_time_id && this.state.currentTimeID <= task.end_time_id) {
+                if (this.state.currentTimeID >= task.start_time_id && this.state.currentTimeID <= task.end_time_id && task.name && task.name !== '×') {
                     taskCellStyle.push(styles.currectTimeCell);
                 }
                 columnViews.push(

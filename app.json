@@ -28,8 +28,11 @@
       "bundleIdentifier": "net.nutfes.nutfes-shift-app"
     },
     "android": {
-      "package": "net.nutfes.nutfes_shift_app",
-      "versionCode": 2
+      "package": "net.nutfes.nutfes_shift_app_v2",
+      "versionCode": 1
+    },
+    "packagerOpts": {
+      "nonPersistent": true
     },
     "description": ""
   }
