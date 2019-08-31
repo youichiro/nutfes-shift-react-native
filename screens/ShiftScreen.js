@@ -105,7 +105,7 @@ class ShiftScreen extends React.Component {
         }
         this.setState({ sheetID: sheetID });
     }
-    setShiftData() {
+    async setShiftData() {
         this.setState({ shiftData: null });
         // this.setState({ shiftData: ShiftData });
 
@@ -113,7 +113,7 @@ class ShiftScreen extends React.Component {
             baseURL: `${env.SHIFT_DATA_API_BASE_URL}/${this.state.sheetID}`,
             responseType: 'json',
         });
-        request.get()
+        await request.get()
             .then(res => {
                 this.setState({ shiftData: res.data });
             })
@@ -257,11 +257,11 @@ class ShiftScreen extends React.Component {
             const buttons = Object.values(SHEET_DIC).map(sheetName => <Text style={styles.sheetButtonGroupText}>{sheetName}</Text>);
             return (
                 <ButtonGroup
-                    onPress={(sheetID) => {
+                    onPress={ async(sheetID) => {
                         if (sheetID+1 === this.state.sheetID) {
                             this.setState({ sheetButtonVisible: false });
                         } else {
-                            this.setState({ sheetID: sheetID+1, sheetButtonVisible: false });
+                            await this.setState({ sheetID: sheetID+1, sheetButtonVisible: false });
                             this.setShiftData();
                         }
                     }}
@@ -298,31 +298,19 @@ class ShiftScreen extends React.Component {
         if (members.length === 0) {
             memberView = [<Text key={0} style={{ fontSize: 10 }}>loading...</Text>];
         } else {
-            for (let i = 0; i < members.length / 2; i += 2) {
-                if (i != members.length - 1) {
-                    memberView.push(
-                        <View key={i} style={{ flex: 1, flexDirection: 'row' }}>
-                            <View style={{ flex: 1, flexDirection: 'row' }}>
-                                <Text style={{ flex: 5, fontSize: 10, color: 'darkslategray' }}>{members[i].belong} {members[i].grade} </Text>
-                                <Text style={{ flex: 6, fontSize: 12 }}>{members[i].name}</Text>
-                            </View>
-                            <View style={{ flex: 1, flexDirection: 'row' }}>
-                                <Text style={{ flex: 5, fontSize: 10, color: 'darkslategray' }}>{members[i + 1].belong} {members[i + 1].grade} </Text>
-                                <Text style={{ flex: 6, fontSize: 12 }}>{members[i + 1].name}</Text>
-                            </View>
+            for (let i = 0; i <= members.length / 2; i += 2) {
+                memberView.push(
+                    <View key={i} style={{ flex: 1, flexDirection: 'row' }}>
+                        <View style={{ flex: 1, flexDirection: 'row' }}>
+                            <Text style={{ flex: 5, fontSize: 10, color: 'darkslategray' }}>{members[i].belong} {members[i].grade} </Text>
+                            <Text style={{ flex: 6, fontSize: 12 }}>{members[i].name}</Text>
                         </View>
-                    )
-                } else {
-                    memberView.push(
-                        <View key={i} style={{ flex: 1, flexDirection: 'row' }}>
-                            <View style={{ flex: 1, flexDirection: 'row' }}>
-                                <Text style={{ flex: 5, fontSize: 10, color: 'darkslategray' }}>{members[i].belong} {members[i].grade} </Text>
-                                <Text style={{ flex: 6, fontSize: 12 }}>{members[i].name}</Text>
-                            </View>
-                            <View style={{ flex: 1, flexDirection: 'row' }}></View>
+                        <View style={{ flex: 1, flexDirection: 'row' }}>
+                            <Text style={{ flex: 5, fontSize: 10, color: 'darkslategray' }}>{members[i + 1].belong} {members[i + 1].grade} </Text>
+                            <Text style={{ flex: 6, fontSize: 12 }}>{members[i + 1].name}</Text>
                         </View>
-                    )
-                }
+                    </View>
+                )
             }
         }
 
