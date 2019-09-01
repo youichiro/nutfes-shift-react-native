@@ -298,7 +298,7 @@ class ShiftScreen extends React.Component {
         if (members.length === 0) {
             memberView = [<Text key={0} style={{ fontSize: 10 }}>loading...</Text>];
         } else {
-            for (let i = 0; i <= members.length / 2; i += 2) {
+            for (let i = 0; i < members.length; i += 2) {
                 memberView.push(
                     <View key={i} style={{ flex: 1, flexDirection: 'row' }}>
                         <View style={{ flex: 1, flexDirection: 'row' }}>
