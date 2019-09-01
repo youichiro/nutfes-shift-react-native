@@ -5,6 +5,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Notifications } from 'expo';
 
 import LoginScreen from './screens/LoginScreen';
+import MyShiftScreen from './screens/MyShiftScreen';
 import ShiftScreen from './screens/ShiftScreen';
 import TimeTableScreen from './screens/TimeTableScreen';
 import ManualListScreen from './screens/ManualListScreen';
@@ -19,13 +20,13 @@ export default class App extends Component {
     this._notificationSubscription = Notifications.addListener(this._handleNotification);
   }
   _handleNotification = async (notification) => {
-    let doPush = await AsyncStorage.getItem('doPush');
-    if (doPush === 'true' && notification.origin === 'received') {
+    if (notification.origin === 'received') {
       Alert.alert(notification.data.title, notification.data.body);
     }
   }
   render() {
     const MainDrawer = createDrawerNavigator({
+      myshift: { screen: MyShiftScreen, navigationOptions: { drawerLabel: "個人シフト", drawerIcon: <Icon name='view-sequential' size={20} /> } },
       shift: { screen: ShiftScreen, navigationOptions: { drawerLabel: "全体シフト", drawerIcon: (<Icon name='view-dashboard-variant' size={20}/>) } },
       time_table: { screen: TimeTableScreen, navigationOptions: { drawerLabel: "タイムテーブル", drawerIcon: (<Icon name='view-dashboard' size={20}/>) } },
       manual: { screen: ManualListScreen, navigationOptions: { drawerLabel: "技大祭マニュアル", drawerIcon: (<Icon name='view-list' size={20}/>) } },

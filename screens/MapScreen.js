@@ -9,7 +9,7 @@ class MapScreen extends React.Component {
         return (
             <WebView
                 source={{ uri: env.MAP_URL }}
-                style={{ marginTop: 30 }}
+                style={{ marginTop: 60 }}
             />
         )
     }
