@@ -9,7 +9,7 @@ import axios from 'axios';
 import CommonHeader from '../common/CommonHeader';
 import CommonActivityIndicator from '../common/CommonActivityIndicator';
 
-const env = require('../env.json').LOCAL;
+const env = require('../env.json').PRODUCTION;
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 const SHEET_DIC = {
