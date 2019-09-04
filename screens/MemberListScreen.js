@@ -36,7 +36,7 @@ class MemberListScreen extends React.Component {
     }
     renderItem = ({ item }) => {
         let nameStyle = [{ flex: 2, fontSize: 12 }];
-        if (item.is_leader) {
+        if (item.is_leader || item.is_subleader) {
             nameStyle.push({ textDecorationLine: 'underline' });
         }
         return (
