@@ -41,7 +41,7 @@ class ShiftScreen extends React.Component {
         super(props);
         this.state = {
             shiftData: null,
-            sheetID: 3,
+            sheetID: null,
             sheetButtonVisible: false,
             taskDetailVisible: false,
             taskDetails: {
@@ -66,6 +66,12 @@ class ShiftScreen extends React.Component {
         this.setSheetID();
         this.setCurrentTime();
         this.setShiftData();
+    }
+    async setUserName() {
+        let username = await AsyncStorage.getItem('username');
+        if (username) {
+            this.setState({ username: username });
+        }
     }
     async setSheetID () {
         // weatherを取得
@@ -104,22 +110,34 @@ class ShiftScreen extends React.Component {
         }
         this.setState({ sheetID: sheetID });
     }
+    setCurrentTime() {
+        setInterval(() => {
+            let now = new Date();
+            let hour = ('0' + now.getHours().toString()).slice(-2);
+            let minutes = now.getMinutes() < 30 ? '00' : '30';
+            let currentTime = hour + ':' + minutes;
+            let currentTimeID = currentTime in TIMES ? TIMES[currentTime] : 0;
+            this.setState({ currentTimeID: currentTimeID });
+        }, 5000)
+    }
     async setShiftData() {
         this.setState({ shiftData: null });
-        // this.setState({ shiftData: ShiftData });
-
-        const request = axios.create({
-            baseURL: `${env.SHIFT_DATA_API_BASE_URL}/${this.state.sheetID}`,
-            responseType: 'json',
-        });
-        await request.get()
-            .then(res => {
-                this.setState({ shiftData: res.data });
-            })
-            .catch(error => {
-                Alert.alert('Error', 'APIの呼び出しに失敗しました');
-                console.log(error);
+        let shiftData = [];
+        for (sheetID in SHEET_DIC) {
+            const request = axios.create({
+                baseURL: `${env.SHIFT_DATA_API_BASE_URL}/${sheetID}`,
+                responseType: 'json',
             });
+            await request.get()
+                .then(res => {
+                    shiftData.push(res.data);
+                })
+                .catch(error => {
+                    Alert.alert('Error', 'APIの呼び出しに失敗しました');
+                    console.log(error);
+                });
+        }
+        this.setState({ shiftData: shiftData });
     }
     setSameTimeMembers(sheet_name, task_name, start_time_id, end_time_id) {
         if (this.state.taskDetailVisible) {
@@ -151,22 +169,6 @@ class ShiftScreen extends React.Component {
                 })
         }
     }
-    setCurrentTime() {
-        setInterval(() => {
-            let now = new Date();
-            let hour = ('0' + now.getHours().toString()).slice(-2);
-            let minutes = now.getMinutes() < 30 ? '00' : '30';
-            let currentTime = hour + ':' + minutes;
-            let currentTimeID = currentTime in TIMES ? TIMES[currentTime] : 0;
-            this.setState({ currentTimeID: currentTimeID });
-        }, 5000)
-    }
-    async setUserName() {
-        let username = await AsyncStorage.getItem('username');
-        if (username) {
-            this.setState({ username: username });
-        }
-    }
     renderTimeColumnView() {
         let Cells = [];
         Cells.push(
@@ -191,7 +193,7 @@ class ShiftScreen extends React.Component {
         return Cells;
     }
     renderShiftScrollView() {
-        const shifts = this.state.shiftData.data;
+        const shifts = this.state.shiftData[this.state.sheetID-1].data;
         let columns = [];
         shifts.forEach((data, i) => {
             let columnViews = [];
@@ -260,8 +262,11 @@ class ShiftScreen extends React.Component {
                         if (sheetID+1 === this.state.sheetID) {
                             this.setState({ sheetButtonVisible: false });
                         } else {
-                            await this.setState({ sheetID: sheetID+1, sheetButtonVisible: false });
-                            this.setShiftData();
+                            await this.setState({
+                                sheetID: sheetID+1,
+                                sheetButtonVisible: false,
+                            });
+                            this.renderShiftScrollView();
                         }
                     }}
                     selectedIndex={this.state.sheetID-1}
@@ -365,7 +370,7 @@ class ShiftScreen extends React.Component {
         )
     }
     render() {
-        if (this.state.shiftData === null) {
+        if (this.state.username === null || this.state.shiftData === null) {
             return <CommonActivityIndicator/>;
         }
         const title = (

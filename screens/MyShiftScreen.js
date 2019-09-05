@@ -86,7 +86,7 @@ class MyShiftScreen extends React.Component {
         this.setState({ weather: res.data });
       })
       .catch(error => {
-        Alert.alert('Error', 'APIの呼び出しに失敗しましたuuu');
+        Alert.alert('Error', 'APIの呼び出しに失敗しました');
         console.log(error);
       })
 
@@ -133,7 +133,7 @@ class MyShiftScreen extends React.Component {
         this.setState({ shiftData: res.data });
       })
       .catch(error => {
-        Alert.alert('Error', 'APIの呼び出しに失敗しましたaaa');
+        Alert.alert('Error', 'APIの呼び出しに失敗しました');
         console.log(error);
       });
   }
@@ -152,7 +152,7 @@ class MyShiftScreen extends React.Component {
   }
   renderShiftScrollView() {
     const data = this.state.shiftData;
-    const sheetData = data.sheets.find((item) => item.sheet_name === SHEET_DIC[this.state.sheetID]);
+    const sheetData = data.find((item) => item.sheet_name === SHEET_DIC[this.state.sheetID]);
     let views = [];
     sheetData.tasks.forEach((task, i) => {
       let taskCellStyle = [
@@ -201,7 +201,7 @@ class MyShiftScreen extends React.Component {
               this.setState({ sheetButtonVisible: false });
             } else {
               await this.setState({ sheetID: sheetID + 1, sheetButtonVisible: false });
-              this.setShiftData();
+              this.renderShiftScrollView();
             }
           }}
           selectedIndex={this.state.sheetID - 1}
