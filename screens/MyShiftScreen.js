@@ -291,7 +291,7 @@ class MyShiftScreen extends React.Component {
       >
         <ScrollView>
           <View style={{ height: 30, alignItems: 'center', justifyContent: 'center' }}>
-            <Text style={{ fontSize: 16 }}>
+            <Text style={{ fontSize: 16, fontWeight: 'bold' }}>
               {this.state.taskDetails.task}
             </Text>
           </View>

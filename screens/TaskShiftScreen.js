@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, ScrollView,
          Alert, Dimensions, Linking, AsyncStorage, TouchableOpacity } from 'react-native';
-import { Button, ButtonGroup, Overlay, Divider } from 'react-native-elements'
+import { Overlay, Divider } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/Feather';
 import axios from 'axios';
 import CommonHeader from '../common/CommonHeader';
@@ -41,8 +41,6 @@ class ShiftScreen extends React.Component {
         super(props);
         this.state = {
             shiftData: null,
-            sheetID: null,
-            sheetButtonVisible: false,
             taskDetailVisible: false,
             taskDetails: {
                 name: '',
@@ -58,57 +56,18 @@ class ShiftScreen extends React.Component {
             },
             currentTimeID: null,
             username: null,
-            weather: null,
         };
     }
-    componentDidMount() {
+    async componentDidMount() {
         this.setUserName();
-        this.setSheetID();
         this.setCurrentTime();
-        this.setShiftData();
+        await this.setShiftData();
     }
     async setUserName() {
         let username = await AsyncStorage.getItem('username');
         if (username) {
             this.setState({ username: username });
         }
-    }
-    async setSheetID () {
-        // weatherを取得
-        const request = axios.create({
-            baseURL: env.WEATHER_API_URL,
-            responseType: 'json',
-        });
-        await request.get()
-            .then(res => {
-                this.setState({ weather: res.data });
-            })
-            .catch(error => {
-                Alert.alert('Error', 'APIの呼び出しに失敗しました');
-                console.log(error);
-            })
-
-        // 現在の日付に応じてsheetIDを変更
-        const date = new Date().getDate();
-        const month = new Date().getMonth() + 1;
-        let sheetID = this.state.weather === '晴' ? 3 : 4; // デフォルトで1日目を表示
-        if (month === 9) {
-            switch (date) {
-                case 13:
-                    sheetID = this.state.weather === '晴' ? 1 : 2;  // 準備日
-                    break;
-                case 14:
-                    sheetID = this.state.weather === '晴' ? 3 : 4; // 1日目
-                    break;
-                case 15:
-                    sheetID = this.state.weather === '晴' ? 5 : 6; // 2日目
-                    break;
-                case 16:
-                    sheetID = this.state.weather === '晴' ? 7 : 8; // 片付け日
-                    break;
-            }
-        }
-        this.setState({ sheetID: sheetID });
     }
     setCurrentTime() {
         setInterval(() => {
@@ -122,22 +81,18 @@ class ShiftScreen extends React.Component {
     }
     async setShiftData() {
         this.setState({ shiftData: null });
-        let shiftData = [];
-        for (sheetID in SHEET_DIC) {
-            const request = axios.create({
-                baseURL: `${env.SHIFT_DATA_API_BASE_URL}/${sheetID}`,
-                responseType: 'json',
+        const request = axios.create({
+            baseURL: `${env.TASK_SHIFT_DATA_API_BASE_URL}/${this.props.navigation.state.params.sheetID}/${this.props.navigation.state.params.taskName}`,
+            responseType: 'json',
+        });
+        await request.get()
+            .then(res => {
+                this.setState({ shiftData: res.data });
+            })
+            .catch(error => {
+                Alert.alert('Error', 'APIの呼び出しに失敗しました');
+                console.log(error);
             });
-            await request.get()
-                .then(res => {
-                    shiftData.push(res.data);
-                })
-                .catch(error => {
-                    Alert.alert('Error', 'APIの呼び出しに失敗しました');
-                    console.log(error);
-                });
-        }
-        this.setState({ shiftData: shiftData });
     }
     setSameTimeMembers(sheet_name, task_name, start_time_id, end_time_id) {
         if (this.state.taskDetailVisible) {
@@ -193,7 +148,7 @@ class ShiftScreen extends React.Component {
         return Cells;
     }
     renderShiftScrollView() {
-        const shifts = this.state.shiftData[this.state.sheetID-1].data;
+        const shifts = this.state.shiftData.data;
         let columns = [];
         shifts.forEach((data, i) => {
             let columnViews = [];
@@ -203,8 +158,18 @@ class ShiftScreen extends React.Component {
                 <Text key={i+2} style={[styles.cellBase, styles.nameCell]}> {data.name} </Text>
             );
             data.tasks.forEach((task, j) => {
+                let backgroundColor = '';
+                let fontColor = 'black';
+                if (task.name === this.props.navigation.state.params.taskName) {
+                    backgroundColor = task.color === 'white' ? 'lightpink' : task.color;
+                } else if (!task.name) {
+                    backgroundColor = 'white';
+                } else {
+                    backgroundColor = '#f5f5f5';
+                    fontColor = 'gray';
+                }
                 let taskCellStyle = [
-                    styles.cellBase, styles.taskCell, { height: TASK_CELL_HEIGHT * task.n_cell, backgroundColor: task.color || 'white' }
+                    styles.cellBase, styles.taskCell, { height: TASK_CELL_HEIGHT * task.n_cell, backgroundColor: backgroundColor, color: fontColor}
                 ];
                 // 現在時刻を強調
                 if (this.state.currentTimeID >= task.start_time_id && this.state.currentTimeID <= task.end_time_id && task.name && task.name !== '×') {
@@ -246,36 +211,12 @@ class ShiftScreen extends React.Component {
         return (
             <ScrollView
                 horizontal
-                contentOffset={{ x: currentUserXOffset }}
+                // contentOffset={{ x: currentUserXOffset }}
                 ref='scrollView'
             >
                 {columns}
             </ScrollView>
         );
-    }
-    renderSheetSelectButtons() {
-        if (this.state.sheetButtonVisible === true) {
-            const buttons = Object.values(SHEET_DIC).map(sheetName => <Text style={styles.sheetButtonGroupText}>{sheetName}</Text>);
-            return (
-                <ButtonGroup
-                    onPress={ async(sheetID) => {
-                        if (sheetID+1 === this.state.sheetID) {
-                            this.setState({ sheetButtonVisible: false });
-                        } else {
-                            await this.setState({
-                                sheetID: sheetID+1,
-                                sheetButtonVisible: false,
-                            });
-                            this.renderShiftScrollView();
-                        }
-                    }}
-                    selectedIndex={this.state.sheetID-1}
-                    buttons={buttons}
-                    containerStyle={styles.sheetButtonGroup}
-                    selectedButtonStyle={{ backgroundColor: 'mediumseagreen' }}
-                />
-            );
-        }
     }
     openLink(url) {
         if (url) {
@@ -294,7 +235,7 @@ class ShiftScreen extends React.Component {
         // 同じ時間帯のメンバーを取得
         if (this.state.taskDetails.members.length === 0) {
             this.setSameTimeMembers(
-                SHEET_DIC[this.state.sheetID], this.state.taskDetails.task, this.state.taskDetails.start_time_id, this.state.taskDetails.end_time_id
+                SHEET_DIC[this.props.navigation.state.params.sheetID], this.state.taskDetails.task, this.state.taskDetails.start_time_id, this.state.taskDetails.end_time_id
             );
         }
         let memberView = [];
@@ -330,9 +271,10 @@ class ShiftScreen extends React.Component {
                         <TouchableOpacity
                             onPress={() => {
                                 this.setState({ taskDetailVisible: false });
+                                this.props.navigation.navigate('shift');
                                 this.props.navigation.navigate(
                                     'task_shift',
-                                    { taskName: this.state.taskDetails.task, sheetID: this.state.sheetID }
+                                    { taskName: this.state.taskDetails.task, sheetID: this.props.navigation.state.params.sheetID }
                                 );
                             }}
                         >
@@ -380,35 +322,28 @@ class ShiftScreen extends React.Component {
         )
     }
     render() {
-        if (this.state.username === null || this.state.shiftData === null) {
+        if (this.state.username === null || this.state.shiftData === null || this.state.tasks === null) {
             return <CommonActivityIndicator/>;
         }
         const title = (
-            <Button
-                title={SHEET_DIC[this.state.sheetID]}
-                type='clear'
-                onPress={() => this.setState({ sheetButtonVisible: !this.state.sheetButtonVisible })}
-                titleStyle={{ color: 'black', fontSize: 16 }}
-                icon={
-                    <Icon
-                        style={{ marginLeft: 3 }}
-                        name={this.state.sheetButtonVisible ? 'chevron-up' : 'chevron-down'}
-                        size={15}
-                        color='black'
-                    />
-                }
-                iconRight
-                containerStyle={{ paddingLeft: 20 }}
-            />
+            <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
+                <View style={{ width: 20 }}>
+                    <Icon name='arrow-left-circle' size={20} onPress={() => this.props.navigation.navigate('shift')}/>
+                </View>
+                <Text style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', textAlign: 'center' }}>
+                    {this.props.navigation.state.params.taskName  }
+                    <Text style={{ fontSize: 10 }}>
+                        {'\n(' + SHEET_DIC[this.props.navigation.state.params.sheetID] + ')' }
+                    </Text>
+                </Text>
+            </View>
         );
         return (
             <View>
                 <CommonHeader
                     title={title}
                     onPress={() => this.props.navigation.openDrawer()}
-                    onRefreshPress={() => {this.setSheetID(); this.setShiftData();}}
                 />
-                {this.renderSheetSelectButtons()}
                 {this.renderTaskDetailOverlay()}
                 <ScrollView maximumZoomScale={2.0}>
                     <View style={{ flex: 1, flexDirection: 'row', marginBottom: 200 }}>
