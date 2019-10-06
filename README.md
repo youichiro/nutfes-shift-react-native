@@ -5,7 +5,8 @@ iOSスクリーンショット:
 ![image1](https://github.com/youichiro/nutfes-shift-native/blob/master/assets/readme_image1.png)
 
 
-このレポジトリはバックエンドのAPIからシフトデータを取得して表示するReactNativeアプリです。
+このレポジトリはバックエンドのAPIからシフトデータを取得してiOS/Androidアプリとして配信するためのReactNativeアプリです。
+プロジェクト全体図:
 ![image2](https://github.com/youichiro/nutfes-shift-native/blob/master/assets/readme_image2.png)
 
-セットアップ -> [docs/setup.md](https://github.com/youichiro/nutfes-shift-native/docs/setup.md)
+セットアップ -> [docs/setup.md](https://github.com/youichiro/nutfes-shift-native/blob/master/docs/setup.md)
