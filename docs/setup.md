@@ -31,10 +31,17 @@ $ cd nutfes-shift-native
 $ npm install
 ```
 
+設定ファイル
+
+```bash
+$ cp env_example.json env.json
+# env.jsonにログインパスワードとAPIのURLを記入する
+```
+
 起動
 
 ```bash
 $ expo start
-# ブラウザで Expo Developer Toolsが立ち上がる
+# ブラウザで Expo Developer Tools が立ち上がる
 # Run on iOS simulator or Run on Android device/emulator をクリックしてシミュレータを起動する
 ```
