@@ -211,7 +211,6 @@ class ShiftScreen extends React.Component {
         return (
             <ScrollView
                 horizontal
-                // contentOffset={{ x: currentUserXOffset }}
                 ref='scrollView'
             >
                 {columns}

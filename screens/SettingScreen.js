@@ -31,7 +31,6 @@ class SettingScreen extends React.Component {
             <View style={{ flex: 1 }}>
                 <CommonHeader title="設定" onPress={() => this.props.navigation.openDrawer()} />
                 <View style={{ flex: 1, justifyContent: 'center', padding: 20 }}>
-                    {/* 通知機能OFFボタンを配置したい(諦めた) */}
                     <Text style={{ height: 30, textAlign: 'center' }}>
                         ログインユーザ: {this.state.username}
                     </Text>

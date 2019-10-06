@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Alert, AsyncStorage } from 'react-native';
+import { View, Alert } from 'react-native';
 import { createAppContainer, createSwitchNavigator, createDrawerNavigator, createStackNavigator } from 'react-navigation'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Notifications } from 'expo';
