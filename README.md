@@ -4,7 +4,7 @@
 iOSスクリーンショット:
 ![image1](https://github.com/youichiro/nutfes-shift-native/blob/master/assets/readme_image1.png)
 
-<br>
+
 このレポジトリはバックエンドのAPIからシフトデータを取得して表示するReactNativeアプリです。
 ![image2](https://github.com/youichiro/nutfes-shift-native/blob/master/assets/readme_image2.png)
 
