@@ -16,7 +16,7 @@ Expoのインストール
 $ npm install -g expo
 ```
 
-Androidエミュレータを使用する場合はAndroid Studioをインストール，iOSシミュレータを使用する場合はXcodeをインストール
+Androidエミュレータを使用する場合はAndroid Studioをインストール，iOSシミュレータを使用する場合はXcodeをインストール  
 macOSの場合は自動リロードをするためにwatchmanをインストール
 
 ```bash
